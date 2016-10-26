@@ -46,6 +46,16 @@ class BinaryTreeNode
     @rightchild ? @rightchild.maximum : self
   end
 
+  def get_height
+    return 0 if self.children.nil?
+    if @leftchild.nil? || @rightchild.nil?
+      only_child = @leftchild || @rightchild
+      1+ only_child.get_height
+    else
+      1+ [@leftchild.get_height, @rightchild.get_height].max
+    end
+  end
+
   # def add_child (child_node)
   #   child_node.parent = self
   #   self.children << child_node unless self.children.include?(child_node)
@@ -78,30 +88,29 @@ class BinaryTreeNode
     new_node.parent = tree_searched
   end
 
+  def delete (value)
+    
+  end
+
 end
 
 if __FILE__ == $PROGRAM_NAME
   n1 = BinaryTreeNode.new(5)
-  n2 = BinaryTreeNode.new(2)
-  n3 = BinaryTreeNode.new(18)
-  n4 = BinaryTreeNode.new(-4)
-  n5 = BinaryTreeNode.new(3)
-  n6 = BinaryTreeNode.new(20)
-  #
-  n1.insert(n2)
-  n1.insert(n3)
-  n1.insert(n4)
-  n1.insert(n5)
-  n1.insert(n6)
+  n1.insert(BinaryTreeNode.new(2))
+  n1.insert(BinaryTreeNode.new(18))
+  n1.insert(BinaryTreeNode.new(-4))
+  n1.insert(BinaryTreeNode.new(3))
+  n1.insert(BinaryTreeNode.new(20))
   n1.insert(BinaryTreeNode.new(22))
   n1.insert(BinaryTreeNode.new(16))
   n1.insert(BinaryTreeNode.new(14))
+  n1.insert(BinaryTreeNode.new(-5))
+  n1.insert(BinaryTreeNode.new(-7))
 
-  p "Parent node: #{n1}"
+  p "Parent node: #{n1}, with height #{n1.get_height}"
   p "First level children: [#{n1.leftchild.value}, #{n1.rightchild.value}]"
+  puts "Second level children: [#{n1.leftchild.leftchild.value}, #{n1.leftchild.rightchild.value}] [#{n1.rightchild.leftchild.value}, #{n1.rightchild.rightchild.value}]"
   p "Tree range: #{n1.minimum.value}   #{n1.maximum.value}"
-
-  p "Minimum of right subtree: #{n1.rightchild.minimum.value}"
 
 
   # # this should work
