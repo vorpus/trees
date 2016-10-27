@@ -1,5 +1,4 @@
-# future functionality
-# delete node
+require 'byebug'
 
 class BinaryTreeNode
   attr_accessor :leftchild, :rightchild
@@ -35,7 +34,7 @@ class BinaryTreeNode
   end
 
   def to_s
-    self.value
+    self.value.to_s
   end
 
   def minimum
@@ -55,17 +54,6 @@ class BinaryTreeNode
       1+ [@leftchild.get_height, @rightchild.get_height].max
     end
   end
-
-  # def add_child (child_node)
-  #   child_node.parent = self
-  #   self.children << child_node unless self.children.include?(child_node)
-  # end
-  #
-  # def remove_child (child_node)
-  #   raise "Not a child!" unless @children.include?(child_node)
-  #   child_node.parent = nil
-  #   self.children.delete(child_node)
-  # end
 
   def search (target_value)
     case target_value <=> self.value
@@ -88,8 +76,40 @@ class BinaryTreeNode
     new_node.parent = tree_searched
   end
 
-  def delete (value)
-    
+  def delete
+    if children.nil? #leaf
+      self.parent = nil
+      return self
+    elsif @leftchild && @rightchild #both left and right child
+      minimum = @rightchild.minimum.delete
+      p @rightchild.minimum
+      @leftchild.parent = minimum
+      @rightchild.parent = minimum
+      minimum.parent = self.parent
+    else #only has one child
+      singlechild = @leftchild || @rightchild
+      singlechild.parent = self.parent
+    end
+    self
+  end
+
+  def traverse2 # old
+    if self.children == nil
+      p self
+      return self
+    end
+    @leftchild.traverse2 if @leftchild
+    p self
+    @rightchild.traverse2 if @rightchild
+  end
+
+  def traverse # can't make it work without flatten?
+    return self.value if self.children == nil
+    nodevals = []
+    nodevals << @leftchild.traverse  unless self.leftchild.nil?
+    nodevals << self.value
+    nodevals << self.rightchild.traverse  unless self.rightchild.nil?
+    nodevals.flatten
   end
 
 end
@@ -106,14 +126,20 @@ if __FILE__ == $PROGRAM_NAME
   n1.insert(BinaryTreeNode.new(14))
   n1.insert(BinaryTreeNode.new(-5))
   n1.insert(BinaryTreeNode.new(-7))
-
-  p "Parent node: #{n1}, with height #{n1.get_height}"
-  p "First level children: [#{n1.leftchild.value}, #{n1.rightchild.value}]"
+  system("clear")
+  puts "The tree:"
+  puts "Parent node: #{n1}, with height #{n1.get_height}"
+  puts "First level children: [#{n1.leftchild.value}, #{n1.rightchild.value}]"
   puts "Second level children: [#{n1.leftchild.leftchild.value}, #{n1.leftchild.rightchild.value}] [#{n1.rightchild.leftchild.value}, #{n1.rightchild.rightchild.value}]"
-  p "Tree range: #{n1.minimum.value}   #{n1.maximum.value}"
+  puts "Tree range: #{n1.minimum.value}   #{n1.maximum.value}"
+  p n1.traverse
+  puts "\n\nAnd deleting two elements..."
+  n1.search(14).delete
+  n1.search(-7).delete
 
+  puts "Parent node: #{n1}, with height #{n1.get_height}"
+  puts "First level children: [#{n1.leftchild.value}, #{n1.rightchild.value}]"
+  puts "Tree range: #{n1.minimum.value}   #{n1.maximum.value}"
 
-  # # this should work
-  # p n1.dfs("root6")
-  # p n1.bfs("root6")#.value
+  p n1.traverse
 end
