@@ -55,6 +55,11 @@ class BinaryTreeNode
     end
   end
 
+  def root
+    return self if parent == nil
+    parent.root
+  end
+
   def search (target_value)
     case target_value <=> self.value
     when -1
