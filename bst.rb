@@ -87,7 +87,7 @@ class BinaryTreeNode
       return self
     elsif @leftchild && @rightchild #both left and right child
       minimum = @rightchild.minimum.delete
-      p @rightchild.minimum
+      # p @rightchild.minimum
       @leftchild.parent = minimum
       @rightchild.parent = minimum
       minimum.parent = self.parent
@@ -139,7 +139,7 @@ if __FILE__ == $PROGRAM_NAME
   puts "Tree range: #{n1.minimum.value}   #{n1.maximum.value}"
   p n1.traverse
   puts "\n\nAnd deleting two elements..."
-  n1.search(14).delete
+  n1.search(18).delete
   n1.search(-7).delete
 
   puts "Parent node: #{n1}, with height #{n1.get_height}"
