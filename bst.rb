@@ -21,7 +21,11 @@ class BinaryTreeNode
 
   def parent=(step_parent)
     if self.parent
-      self.value < self.parent.value ? @parent.leftchild = nil : @parent.rightchild = nil
+      if self.value < self.parent.value
+        @parent.leftchild = nil if @parent.leftchild == self
+      else
+        @parent.rightchild = nil if @parent.rightchild == self
+      end
     end
     @parent = step_parent
     if self.parent
