@@ -3,8 +3,23 @@ require_relative 'bst'
 class AVLTreeNode < BinaryTreeNode
 
   def initialize(value)
-    @height = 0
     super
+  end
+
+  def balance
+    if self.leftchild.nil?
+      lh = 0
+    else
+      lh = self.leftchild.height + 1
+    end
+
+    if self.rightchild.nil?
+      rh = 0
+    else
+      rh = self.rightchild.height + 1
+    end
+
+    lh-rh
   end
 
   def right_rotate
@@ -20,6 +35,7 @@ class AVLTreeNode < BinaryTreeNode
     else
       @parent = nil
     end
+
   end
 
   def left_rotate
@@ -33,84 +49,40 @@ class AVLTreeNode < BinaryTreeNode
     parent.parent = self
 
     if upper_node
-      # debugger
       self.parent = upper_node
-
     else
       @parent = nil
     end
-
-    # p self.rightchild.leftchild
   end
 
-  def self.single_rotation_test
-    n1 = AVLTreeNode.new(5)
-    n2 = AVLTreeNode.new(2)
-    n1.insert(n2)
-    n1.insert(AVLTreeNode.new(18))
-    n1.insert(AVLTreeNode.new(1))
-    n1.insert(AVLTreeNode.new(3))
-    system("clear")
-    puts "The tree:"
-    puts "Root node: #{n1.root}, with height #{n1.get_height}"
-    puts "First level children: [#{n1.leftchild.value}, #{n1.rightchild.value}]"
-    puts "Second level children: [#{n1.leftchild.leftchild.value}, #{n1.leftchild.rightchild.value}]"
-    puts "Tree range: #{n1.minimum.value}   #{n1.maximum.value}"
-    p n1.traverse
 
-    n1.search(2).right_rotate
-    print "\n\n"
-    puts "The tree after right rotation:"
-    puts "Root node: #{n1.root}, with height #{n1.root.get_height}"
-    puts "First level children: [#{n1.root.leftchild.value}, #{n1.root.rightchild.value}]"
-    puts "Second level children: [#{n1.root.rightchild.leftchild}, #{n1.root.rightchild.rightchild}]"
-    puts "Tree range: #{n1.root.minimum.value}   #{n1.root.maximum.value}"
-    p n1.root.traverse
+  def insert (new_node)
+    tree_searched = self.search(new_node.value)
+    if tree_searched.value == new_node.value
+      raise "Can't have two same values in BST"
+    end
+    new_node.parent = tree_searched
 
-    n1.search(5).left_rotate
-    print "\n\n"
-    puts "The tree after left rotation:"
-    puts "Root node: #{n1.root}, with height #{n1.get_height}"
-    puts "First level children: [#{n1.leftchild.value}, #{n1.rightchild.value}]"
-    puts "Second level children: [#{n1.leftchild.leftchild.value}, #{n1.leftchild.rightchild.value}]"
-    puts "Tree range: #{n1.minimum.value}   #{n1.maximum.value}"
-    p n1.traverse
-  end
 
-  def self.single_rotation_parent_test
-    n1 = AVLTreeNode.new(6)
-    n1.insert(AVLTreeNode.new(4))
-    n1.insert(AVLTreeNode.new(9))
-    n1.insert(AVLTreeNode.new(1))
-    n1.insert(AVLTreeNode.new(5))
-    n1.insert(AVLTreeNode.new(8))
-    n1.insert(AVLTreeNode.new(7))
-
-    #     Starting tree
-    #         6
-    #       /   \
-    #     4      9
-    #   /   \   /
-    #  1    5  8
-    #         /
-    #        7
-    p "Before rotation:"
-    p "Tree height: #{n1.get_height}"
-    p "Left child height: #{n1.leftchild.get_height}"
-    p "Right child height: #{n1.rightchild.get_height}"
-
-    n1.search(8).right_rotate
-
-    #     Ending tree
-    #         6
-    #       /   \
-    #     4      8
-    #   /   \   / \
-    #  1    5  7   9
-    puts "\n\nAfter rotation:"
-    p "Tree height: #{n1.get_height}"
-    p "Left child height: #{n1.leftchild.get_height}"
-    p "Right child height: #{n1.rightchild.get_height}"
+    if new_node.root.balance.abs > 1
+      if new_node.value < new_node.parent.value && new_node.parent.value < new_node.parent.parent.value
+        p "single right rotation"
+        new_node.parent.right_rotate
+      elsif new_node.value > new_node.parent.value && new_node.parent.value < new_node.parent.parent.value
+        p "left right rotate"
+        pivot = new_node.parent
+        new_node.left_rotate
+        pivot.right_rotate
+      elsif new_node.value > new_node.parent.value && new_node.parent.value > new_node.parent.parent.value
+        p "single left rotation"
+        new_node.parent.left_rotate
+      elsif new_node.value > new_node.parent.value && new_node.parent.value < new_node.parent.parent.value
+        p "right left rotate"
+        pivot = new_node.parent
+        new_node.right_rotate
+        pivot.left_rotate
+      end
+    end
   end
 
 end
@@ -120,30 +92,19 @@ if __FILE__ == $PROGRAM_NAME
   # AVLTreeNode.single_rotation_parent_test
 
   n1 = AVLTreeNode.new(20)
-  n1.insert(AVLTreeNode.new(10))
-  n1.insert(AVLTreeNode.new(5))
-  n1.insert(AVLTreeNode.new(30))
-  n1.insert(AVLTreeNode.new(25))
-  n1.insert(AVLTreeNode.new(40))
-  n1.insert(AVLTreeNode.new(35))
-  n1.insert(AVLTreeNode.new(45))
-  n1.insert(AVLTreeNode.new(34))
-  p "Unbalanced tree before rotation:"
-  p "Tree height: #{n1.get_height}"
-  p "Left child height: #{n1.leftchild.get_height}"
-  p "Right child height: #{n1.rightchild.get_height}"
-
-  n1.search(35).right_rotate
-  p n1.traverse
-  # p n1.search(34).parent
-  n1.search(35).left_rotate
-
-  # p n1.search(34)
-  puts"\n\nAfter rotation:"
-  p "Tree height: #{n1.get_height}"
-  p "Left child height: #{n1.leftchild.get_height}"
-  p "Right child height: #{n1.rightchild.get_height}"
-  p n1.traverse
-
+  n1.root.insert(AVLTreeNode.new(19))
+  p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+  n1.root.insert(AVLTreeNode.new(18))
+  p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+  n1.root.insert(AVLTreeNode.new(17))
+  p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+  n1.root.insert(AVLTreeNode.new(16))
+  p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+  n1.root.insert(AVLTreeNode.new(15))
+  p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+  n1.root.insert(AVLTreeNode.new(14))
+  p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+  p n1.root.rightchild
+  p n1.root.traverse
 
 end

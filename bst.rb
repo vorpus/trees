@@ -2,13 +2,14 @@ require 'byebug'
 
 class BinaryTreeNode
   attr_accessor :leftchild, :rightchild
-  attr_reader :value
+  attr_reader :value, :height
 
   def initialize(value)
     @value = value
     @parent = nil
     @leftchild = nil
     @rightchild = nil
+    @height = 0
   end
 
   def parent
@@ -29,7 +30,19 @@ class BinaryTreeNode
     end
     @parent = step_parent
     if self.parent
-      self.value < self.parent.value ? @parent.leftchild = self : @parent.rightchild = self
+      # debugger
+
+      if self.value < self.parent.value
+        @parent.leftchild = self
+      else
+        @parent.rightchild = self #if self != @parent.parent
+      end
+
+      if step_parent == @leftchild
+        @leftchild = nil
+      elsif step_parent == @rightchild
+        @rightchild = nil
+      end
     end
   end
 
@@ -49,13 +62,13 @@ class BinaryTreeNode
     @rightchild ? @rightchild.maximum : self
   end
 
-  def get_height
+  def height
     return 0 if self.children.nil?
     if @leftchild.nil? || @rightchild.nil?
       only_child = @leftchild || @rightchild
-      1+ only_child.get_height
+      @height = 1+ only_child.height
     else
-      1+ [@leftchild.get_height, @rightchild.get_height].max
+      @height = 1+ [@leftchild.height, @rightchild.height].max
     end
   end
 
