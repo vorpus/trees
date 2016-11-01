@@ -72,7 +72,7 @@ class AVLTreeNode < BinaryTreeNode
         p "left right rotate"
         pivot = new_node.parent
         new_node.left_rotate
-        pivot.right_rotate
+        new_node.right_rotate
       elsif new_node.value > new_node.parent.value && new_node.parent.value > new_node.parent.parent.value
         p "single left rotation"
         new_node.parent.left_rotate
@@ -80,31 +80,79 @@ class AVLTreeNode < BinaryTreeNode
         p "right left rotate"
         pivot = new_node.parent
         new_node.right_rotate
-        pivot.left_rotate
+        new_node.left_rotate
       end
     end
+
+    if new_node.root.balance.abs > 1
+      if new_node.parent.value < new_node.parent.parent.value
+        new_node.parent.right_rotate
+      else
+        new_node.parent.left_rotate
+      end
+    end
+
+    if new_node.root.balance.abs > 1
+      if new_node.root.balance > 1
+        new_node.root.leftchild.right_rotate
+      else
+        new_node.root.rightchild.left_rotate
+      end
+    end
+  end
+
+  def self.ex_double_rotate
+    n1 = AVLTreeNode.new(20)
+    n1.root.insert(AVLTreeNode.new(4))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(26))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(3))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(9))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(21))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(30))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(2))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(7))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(11))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(15))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    p n1.root.leftchild.leftchild
+    p n1.root.traverse
+  end
+
+  def self.ex_lr_rotate
+    n1 = AVLTreeNode.new(20)
+    n1.root.insert(AVLTreeNode.new(4))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
+    n1.root.insert(AVLTreeNode.new(8))
+    p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
   end
 
 end
 
 if __FILE__ == $PROGRAM_NAME
-  # AVLTreeNode.single_rotation_test
-  # AVLTreeNode.single_rotation_parent_test
+
+  # AVLTreeNode.ex_double_rotate
+
+  # AVLTreeNode.ex_lr_rotate
 
   n1 = AVLTreeNode.new(20)
-  n1.root.insert(AVLTreeNode.new(19))
+  n1.root.insert(AVLTreeNode.new(4))
   p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
-  n1.root.insert(AVLTreeNode.new(18))
+  n1.root.insert(AVLTreeNode.new(26))
   p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
-  n1.root.insert(AVLTreeNode.new(17))
+  n1.root.insert(AVLTreeNode.new(3))
   p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
-  n1.root.insert(AVLTreeNode.new(16))
+  n1.root.insert(AVLTreeNode.new(9))
   p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
   n1.root.insert(AVLTreeNode.new(15))
   p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
-  n1.root.insert(AVLTreeNode.new(14))
-  p "Tree rooted at #{n1.root} with height #{n1.root.height} and balance #{n1.root.balance}"
-  p n1.root.rightchild
-  p n1.root.traverse
 
 end
